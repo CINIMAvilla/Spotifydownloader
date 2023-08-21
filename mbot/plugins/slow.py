@@ -122,11 +122,10 @@ async def search(Mbot: Mbot, query: CallbackQuery):
                path = await download_songs(item,randomdir)
             except Exception as e:
                 pass
-## optional you can clear this or add this by using #
                 await message.reply(e)
-          #      await Mbot.send_message(BUG,e)
+                await Mbot.send_message(BUG,e)
                 await query.message.reply_text(f"[{song.get('name')} - {song.get('artist')}](https://open.spotify.com/track/{song.get('deezer_id')}) Track Not Found ⚠️")
-         #       await message.reply_text(f"try `/saavn {song.get('name')} - {song.get('artist')}`")
+                await message.reply_text(f"try `/saavn {song.get('name')} - {song.get('artist')}`")
             try:
                 await sleep(0.6)
                 audio = FLAC(path)
@@ -203,9 +202,3 @@ async def search(Mbot: Mbot, query: CallbackQuery):
             rmtree(randomdir)
         except:
             pass
-        try:
-            await query.message.reply_text(f"Done✅",   
-         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(text="Feedback", callback_data="feed")]]))
-            await query.message.reply_text(f"Check out @spotify_downloa (music)  @spotifynewss(News)")
-        except:
-            pass     
