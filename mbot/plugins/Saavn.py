@@ -50,20 +50,26 @@ async def search_and_send_song(client, message):
         img = result['image'][2]['link']
         song_url = result['url']
         duration = result['duration']
+
         requester = message.from_user.username if message.from_user.username else "Someone"
+
         # Simulate the "downloading" status
-                await searching_msg.edit("Downloading...")
+        await searching_msg.edit("Downloading...")
+
         async with aiohttp.ClientSession() as session:
             async with session.get(img) as img_response, session.get(slink) as song_response:
                 thumbnail_data = await img_response.read()
                 song_data = await song_response.read()
+
         thumbnail_path = "thumbnail.jpg"
         song_path = "song.mp3"
         with open(thumbnail_path, "wb") as thumbnail_file, open(song_path, "wb") as song_file:
             thumbnail_file.write(thumbnail_data)
             song_file.write(song_data)
+
         # Simulate the "uploading" status
-                await searching_msg.edit("Uploading...")
+        await searching_msg.edit("Uploading...")
+
         await message.reply_audio(
             audio=song_path,
             title=sname,
@@ -71,12 +77,12 @@ async def search_and_send_song(client, message):
             caption=f"🎵 [{sname}]({song_url})\n"
                     f"🕒 Duration: {duration}\n"
                     f"👤 Requested by: {requester}",
-            thumb=thumbnail_path 
+            thumb=thumbnail_path
         )
-        
+
         os.remove(thumbnail_path)
         os.remove(song_path)
-        
+
     except (KeyError, IndexError):
         await message.reply("No results found.")
         # Get similar results and create an inline keyboard
@@ -91,3 +97,4 @@ async def search_and_send_song(client, message):
 
     finally:
         await searching_msg.delete()
+
