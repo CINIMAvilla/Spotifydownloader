@@ -7,8 +7,6 @@ import aiohttp
 async def search_and_send_song(client, message):
     query = urllib.parse.quote(message.text)
 
-    await client.send_chat_action(message.chat.id, action="typing")
-
     url = f"https://saavn.me/search/songs?query={query}&page=1&limit=1"
 
     try:
@@ -18,7 +16,6 @@ async def search_and_send_song(client, message):
     except Exception as e:
         await message.reply(f"Error: {str(e)}")
         return
-
     try:
         result = r['data']['results'][0]
         sname = result['name']
