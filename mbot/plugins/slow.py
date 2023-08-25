@@ -62,7 +62,7 @@ genius = Genius("api_key")
 #    await foo(c, m, cb=True)
 
 ## Remove & filters.private to respond in group's Also 
-@Mbot.on_message(filters.incoming & filters.text & filters.private,group=3)
+#@Mbot.on_message(filters.incoming & filters.text & filters.private,group=3)
 async def _(c, m):
     message = m
     if message.text.startswith('/'):
@@ -101,7 +101,7 @@ async def _(c, m):
         await K.delete()
     finally:
          await m.continue_propagation()
-
+	    
 @Mbot.on_callback_query(filters.regex(r"search"))
 async def search(Mbot: Mbot, query: CallbackQuery):
    ind, index, track= query.data.split("_")
