@@ -7,7 +7,7 @@ import asyncio
 def format_copyable_text(text):
     return f"`{text}`"
 
-def get_similar_results(query):
+async def get_similar_results(query):
     # Simulate a search request for similar songs based on the user's query
     similar_results = []
 
@@ -57,14 +57,15 @@ async def search_and_send_song(client, message):
         await searching_msg.edit("Downloading...")
 
         async with aiohttp.ClientSession() as session:
-            async with session.get(img) as img_response, session.get(slink) as song_response:
-                thumbnail_data = await img_response.read()
+            async with session.get(img) as img_response:
+                img_data = await img_response.read()
+            async with session.get(slink) as song_response:
                 song_data = await song_response.read()
 
         thumbnail_path = "thumbnail.jpg"
         song_path = "song.mp3"
         with open(thumbnail_path, "wb") as thumbnail_file, open(song_path, "wb") as song_file:
-            thumbnail_file.write(thumbnail_data)
+            thumbnail_file.write(img_data)
             song_file.write(song_data)
 
         # Simulate the "uploading" status
@@ -86,7 +87,7 @@ async def search_and_send_song(client, message):
     except (KeyError, IndexError):
         await message.reply("No results found.")
         # Get similar results and create an inline keyboard
-        similar_results = get_similar_results(query)
+        similar_results = await get_similar_results(query)
         if similar_results:
             inline_keyboard = []
             for result in similar_results:
@@ -97,4 +98,3 @@ async def search_and_send_song(client, message):
 
     finally:
         await searching_msg.delete()
-
