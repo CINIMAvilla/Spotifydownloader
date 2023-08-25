@@ -1,32 +1,59 @@
-### This download from saavn.me an unofficial api
-from pyrogram import Client,filters
-import requests,os,wget 
-@Client.on_message(filters.incoming & filters.text & filters.private & filters.group)
-async def song(client, message):
+from pyrogram import Client, filters
+import requests
+import urllib.parse
+import aiohttp
+
+@Client.on_message(filters.text & (filters.private | filters.group))
+async def search_and_send_song(client, message):
+    query = urllib.parse.quote(message.text)
+
+    await client.send_chat_action(message.chat.id, action="typing")
+
+    url = f"https://saavn.me/search/songs?query={query}&page=1&limit=1"
+
     try:
-       args = message.text.split(None, 1)[1]
-    except:
-        return await message.reply("/saavn requires an argument.")
-    if args.startswith(" "):
-        await message.reply("/saavn requires an argument.")
-        return ""
-    pak = await message.reply('Downloading...')
-    try:
-        r = requests.get(f"https://saavn.me/search/songs?query={args}&page=1&limit=1").json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                r = await response.json()
     except Exception as e:
-        await pak.edit(str(e))
+        await message.reply(f"Error: {str(e)}")
         return
-    sname = r['data']['results'][0]['name']
-    slink = r['data']['results'][0]['downloadUrl'][4]['link']
-    ssingers = r['data']['results'][0]['primaryArtists']
-  #  album_id = r.json()[0]["albumid"]
-    img = r['data']['results'][0]['image'][2]['link']
-    thumbnail = wget.download(img)
-    file = wget.download(slink)
-    ffile = file.replace("mp4", "mp3")
-    os.rename(file, ffile)
-    await pak.edit('Uploading...')
-    await message.reply_audio(audio=ffile, title=sname, performer=ssingers,caption=f"[{sname}]({r['data']['results'][0]['url']}) - from saavn ",thumb=thumbnail)
-    os.remove(ffile)
-    os.remove(thumbnail)
-    await pak.delete()
+
+    try:
+        result = r['data']['results'][0]
+        sname = result['name']
+        slink = result['downloadUrl'][4]['link']
+        ssingers = result['primaryArtists']
+        img = result['image'][2]['link']
+        song_url = result['url']
+        duration = result['duration']
+
+        requester = message.from_user.username if message.from_user.username else "Someone"
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(img) as img_response, session.get(slink) as song_response:
+                thumbnail_data = await img_response.read()
+                song_data = await song_response.read()
+
+        thumbnail_path = "thumbnail.jpg"
+        song_path = "song.mp3"
+        with open(thumbnail_path, "wb") as thumbnail_file, open(song_path, "wb") as song_file:
+            thumbnail_file.write(thumbnail_data)
+            song_file.write(song_data)
+
+        await message.reply_audio(
+            audio=song_path,
+            title=sname,
+            performer=ssingers,
+            caption=f"🎵 [{sname}]({song_url})\n"
+                    f"🕒 Duration: {duration}\n"
+                    f"👤 Requested by: {requester}\n"
+                    f"🔗 [Listen on Saavn]({song_url})",
+            thumb=thumbnail_path
+        )
+
+        os.remove(thumbnail_path)
+        os.remove(song_path)
+
+    except (KeyError, IndexError):
+        await message.reply("No results found.")
