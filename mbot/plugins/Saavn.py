@@ -40,8 +40,8 @@ async def handle_private_messages(client, message):
             f"Please start the bot in a private chat by messaging @{BOT_USERNAME} and try again."
         )
         return
-                                                        return
-    urllib.parse.quote(message.text)
+
+    query = urllib.parse.quote(message.text)
     if query.startswith("/"):
         return
 
