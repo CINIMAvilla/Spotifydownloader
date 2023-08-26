@@ -14,17 +14,6 @@ mongo_client = pymongo.MongoClient(MONGODB_URI)
 db = mongo_client['musix']
 user_collection = db['users']
 
-@Client.on_private_chat_created
-async def add_user_to_db_on_start(client, chat):
-    user_id = chat.id
-    await user_collection.insert_one({'user_id': user_id})
-    data = await client.get_me()
-    BOT_USERNAME = data.username
-
-    await client.send_message(
-        LOG_GROUP,
-        f"#NEWUSER: \n\nNew User [{chat.first_name}](tg://user?id={user_id}) started @{BOT_USERNAME} from PM!"
-    )
 
 @Client.on_message(filters.text & filters.private)
 async def handle_private_messages(client, message):
