@@ -40,7 +40,7 @@ async def handle_private_messages(client, message):
             f"Please start the bot in a private chat by messaging @{BOT_USERNAME} and try again."
         )
         return
-        
+                                                        return
     urllib.parse.quote(message.text)
     if query.startswith("/"):
     return
@@ -103,3 +103,47 @@ async def handle_private_messages(client, message):
         
     finally:
         await searching_msg.delete()
+
+@Client.on_message(filters.command('broadcast'))
+async def broadcast_command(client, message):
+    # get the message to broadcast
+    msg = ' '.join(message.command[1:])
+    if not msg:
+        await message.reply('Please provide a message to broadcast.')
+        return
+
+    await message.reply(f"Broadcasting message: {msg}")
+    count = 0
+    success = 0
+    failure = 0
+    for user in user_collection.find():  # Use 'user_collection' instead of 'collection'
+        try:
+            await client.send_message(user['user_id'], msg)
+            success += 1
+        except:
+            failure += 1
+        count += 1
+
+        if count % 10 == 0:
+            await message.reply(f"Broadcast Status:\nTotal Users: {count}\nSuccessful: {success}\nFailed: {failure}")
+        time.sleep(0.5)
+
+    await message.reply(f"Broadcasted Status:\nTotal Users: {count}\nSuccessful: {success}\nFailed: {failure}")
+
+# Add the users command handler
+@Client.on_message(filters.command('users'))
+def users_command(client, message):
+    users = user_collection.find()  # Use 'user_collection' instead of 'collection'
+    if users.count() == 0:
+        client.send_message(message.chat.id, 'No users found.')
+        return
+    user_list = []
+    for user in users:
+        if user['username']:
+            user_list.append('@' + user['username'] + ' (' + str(user['user_id']) + ')')
+        else:
+            user_list.append(str(user['user_id']))
+    if message.chat.type == 'private':
+        client.send_message(message.chat.id, '\n'.join(user_list))
+    else:
+        client.send_document(message.chat.id, 'users.json', {'user_list': user_list})
