@@ -31,43 +31,8 @@ from mbot.plugins.Saavn import user_collection
 
 @Mbot.on_message(filters.command("start") & filters.private)
 async def start(client, message):
-    reply_markup = [
-        [
-            InlineKeyboardButton(
-                text="Bot Channel", url="https://t.me/Spotify_downloa"
-            ),
-            InlineKeyboardButton(
-                text="Repo",
-                url="https://github.com/Masterolic/Spotify-Downloader/"
-            ),
-            InlineKeyboardButton(text="Help", callback_data="helphome"),
-        ],
-        [
-            InlineKeyboardButton(
-                text="Donate",
-                url="https://www.buymeacoffee.com/Masterolic"
-            ),
-        ]
-    ]
-    if LOG_GROUP:
-        invite_link = await client.create_chat_invite_link(
-            chat_id=(int(LOG_GROUP) if str(LOG_GROUP).startswith("-100") else LOG_GROUP)
-        )
-        reply_markup.append(
-            [InlineKeyboardButton("LOG Channel", url=invite_link.invite_link)]
-        )
-    if (
-        message.chat.type != "private"
-        and message.chat.id not in AUTH_CHATS
-        and message.from_user.id not in SUDO_USERS
-    ):
-        return await message.reply_text(
-            "This Bot Will Work In Groups It's Authorized.",
-            reply_markup=InlineKeyboardMarkup(reply_markup)
-        )
     await message.reply_text(
         f"Hello {message.from_user.first_name}, I'm a Simple Music Downloader Bot. I Currently Support Download from Youtube.",
-        reply_markup=InlineKeyboardMarkup(reply_markup),
     )
     user_id = message.from_user.id
     is_subscribed = user_collection.find_one({'user_id': user_id})
