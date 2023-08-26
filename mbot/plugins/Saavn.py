@@ -5,7 +5,7 @@ import aiohttp
 import asyncio
 from mbot import LOG_GROUP
 import pymongo
-
+import os
 # Your MongoDB connection URI
 MONGODB_URI = "mongodb+srv://Musix:abhijith@cluster0.zp443lr.mongodb.net/?retryWrites=true&w=majority"
 
@@ -20,7 +20,7 @@ async def handle_private_messages(client, message):
     user_id = message.from_user.id
 
     # Check if user is subscribed in MongoDB
-    is_subscribed = await user_collection.find_one({'user_id': user_id})
+    is_subscribed = user_collection.find_one({'user_id': user_id})
 
     if not is_subscribed:
         data = await client.get_me()
