@@ -28,29 +28,56 @@ from pyrogram.raw.functions import Ping
 from mbot import LOG_GROUP, OWNER_ID, SUDO_USERS, Mbot,AUTH_CHATS
 from os import execvp,sys
 
-@Mbot.on_message(filters.command("start"))
-async def start(client,message):
-    reply_markup = [[
-        InlineKeyboardButton(
-            text="Bot Channel", url="https://t.me/Spotify_downloa"),
-        InlineKeyboardButton(
-            text="Repo",
-            url="https://github.com/Masterolic/Spotify-Downloader/"),
-        InlineKeyboardButton(text="Help",callback_data="helphome")
+@Mbot.on_message(filters.command("start") & filters.private)
+async def start(client, message):
+    reply_markup = [
+        [
+            InlineKeyboardButton(
+                text="Bot Channel", url="https://t.me/Spotify_downloa"
+            ),
+            InlineKeyboardButton(
+                text="Repo",
+                url="https://github.com/Masterolic/Spotify-Downloader/"
+            ),
+            InlineKeyboardButton(text="Help", callback_data="helphome"),
         ],
         [
-            InlineKeyboardButton(text="Donate",
-            url="https://www.buymeacoffee.com/Masterolic"),
-        ]]
+            InlineKeyboardButton(
+                text="Donate",
+                url="https://www.buymeacoffee.com/Masterolic"
+            ),
+        ]
+    ]
     if LOG_GROUP:
+        invite_link = await client.create_chat_invite_link(
+            chat_id=(int(LOG_GROUP) if str(LOG_GROUP).startswith("-100") else LOG_GROUP)
+        )
+        reply_markup.append(
+            [InlineKeyboardButton("LOG Channel", url=invite_link.invite_link)]
+        )
+    if (
+        message.chat.type != "private"
+        and message.chat.id not in AUTH_CHATS
+        and message.from_user.id not in SUDO_USERS
+    ):
+        return await message.reply_text(
+            "This Bot Will Not Work In Groups Unless It's Authorized.",
+            reply_markup=InlineKeyboardMarkup(reply_markup)
+        )
+    await message.reply_text(
+        f"Hello {message.from_user.first_name}, I'm a Simple Music Downloader Bot. I Currently Support Download from Youtube.",
+        reply_markup=InlineKeyboardMarkup(reply_markup),
+    )
 
-        invite_link = await client.create_chat_invite_link(chat_id=(int(LOG_GROUP) if str(LOG_GROUP).startswith("-100") else LOG_GROUP))
-        reply_markup.append([InlineKeyboardButton("LOG Channel", url=invite_link.invite_link)])
-    if message.chat.type != "private" and message.chat.id not in AUTH_CHATS and message.from_user.id not in SUDO_USERS:
-        return await message.reply_text("This Bot Will Not Work In Groups Unless It's Authorized.",
-                    reply_markup=InlineKeyboardMarkup(reply_markup))
-    return await message.reply_text(f"Hello {message.from_user.first_name}, I'm a Simple Music Downloader Bot. I Currently Support Download from Youtube.",
-                    reply_markup=InlineKeyboardMarkup(reply_markup))
+    user_id = message.from_user.id  # Using message to get the user's ID
+    await user_collection.insert_one({"user_id": user_id})
+    data = await client.get_me()
+    BOT_USERNAME = data.username
+
+    await client.send_message(
+        LOG_GROUP,
+        f"#NEWUSER: \n\nNew User [{message.from_user.first_name}](tg://user?id={user_id}) started @{BOT_USERNAME} from PM!"
+    )
 
 @Mbot.on_message(filters.command("restart") & filters.chat(OWNER_ID) & filters.private)
 async def restart(_,message):
