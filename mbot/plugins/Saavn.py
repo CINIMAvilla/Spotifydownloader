@@ -3,14 +3,48 @@ import requests
 import urllib.parse
 import aiohttp
 import asyncio
+from config import LOG_GROUP
+import pymongo
 
+# Your MongoDB connection URI
+MONGODB_URI = "mongodb+srv://Musix:abhijith@cluster0.zp443lr.mongodb.net/?retryWrites=true&w=majority"
 
-@Client.on_message(filters.text & (filters.private | filters.group))
-async def search_and_send_song(client, message):
-    query = urllib.parse.quote(message.text)
-    if query.startswith("/"):
+# Initialize MongoDB client
+mongo_client = pymongo.MongoClient(MONGODB_URI)
+mongo_db = mongo_client.get_database()
+user_collection = mongo_db['users']
+
+@Client.on_private_chat_created
+async def add_user_to_db_on_start(client, chat):
+    user_id = chat.id
+    await user_collection.insert_one({'user_id': user_id})
+    data = await client.get_me()
+    BOT_USERNAME = data.username
+
+    await client.send_message(
+        LOG_GROUP,
+        f"#NEWUSER: \n\nNew User [{chat.first_name}](tg://user?id={user_id}) started @{BOT_USERNAME} from PM!"
+    )
+
+@Client.on_message(filters.text & filters.private)
+async def handle_private_messages(client, message):
+    user_id = message.from_user.id
+
+    # Check if user is subscribed in MongoDB
+    is_subscribed = await user_collection.find_one({'user_id': user_id})
+
+    if not is_subscribed:
+        data = await client.get_me()
+        BOT_USERNAME = data.username
+        await message.reply(
+            f"Please start the bot in a private chat by messaging @{BOT_USERNAME} and try again."
+        )
         return
         
+    urllib.parse.quote(message.text)
+    if query.startswith("/"):
+    return
+
     searching_msg = await message.reply("Searching...")
     url = f"https://saavn.me/search/songs?query={query}&page=1&limit=1"
     
