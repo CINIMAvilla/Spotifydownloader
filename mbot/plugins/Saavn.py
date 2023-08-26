@@ -11,8 +11,8 @@ MONGODB_URI = "mongodb+srv://Musix:abhijith@cluster0.zp443lr.mongodb.net/?retryW
 
 # Initialize MongoDB client
 mongo_client = pymongo.MongoClient(MONGODB_URI)
-mongo_db = mongo_client.get_database()
-user_collection = mongo_db['users']
+db = mongo_client['musix']
+user_collection = db['users']
 
 @Client.on_private_chat_created
 async def add_user_to_db_on_start(client, chat):
