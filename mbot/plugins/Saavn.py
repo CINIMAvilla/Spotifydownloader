@@ -43,7 +43,7 @@ async def handle_private_messages(client, message):
                                                         return
     urllib.parse.quote(message.text)
     if query.startswith("/"):
-    return
+        return
 
     searching_msg = await message.reply("Searching...")
     url = f"https://saavn.me/search/songs?query={query}&page=1&limit=1"
