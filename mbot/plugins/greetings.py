@@ -62,19 +62,24 @@ async def start(client, message):
         and message.from_user.id not in SUDO_USERS
     ):
         return await message.reply_text(
-            "This Bot Will Not Work In Groups Unless It's Authorized.",
+            "This Bot Will Work In Groups It's Authorized.",
             reply_markup=InlineKeyboardMarkup(reply_markup)
         )
     await message.reply_text(
         f"Hello {message.from_user.first_name}, I'm a Simple Music Downloader Bot. I Currently Support Download from Youtube.",
         reply_markup=InlineKeyboardMarkup(reply_markup),
     )
+    user_id = message.from_user.id
+    is_subscribed = user_collection.find_one({'user_id': user_id})
 
-    user_id = message.from_user.id  # Using message to get the user's ID
-    user_collection.insert_one({"user_id": user_id})
-    data = await client.get_me()
-    BOT_USERNAME = data.username
-
+    if not is_subscribed:
+        user_collection.insert_one({"user_id": user_id})
+        data = await client.get_me()
+        BOT_USERNAME = data.username
+        await message.reply(
+            f"Please start the bot in a private chat by messaging @{BOT_USERNAME} and try again."
+        )
+        return
     await client.send_message(
         LOG_GROUP,
         f"#NEWUSER: \n\nNew User [{message.from_user.first_name}](tg://user?id={user_id}) started @{BOT_USERNAME} from PM!"
