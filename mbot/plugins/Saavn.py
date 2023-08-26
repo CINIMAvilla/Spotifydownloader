@@ -3,7 +3,7 @@ import requests
 import urllib.parse
 import aiohttp
 import asyncio
-from config import LOG_GROUP
+from mbot import LOG_GROUP
 import pymongo
 
 # Your MongoDB connection URI
