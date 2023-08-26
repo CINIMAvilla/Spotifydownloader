@@ -15,7 +15,7 @@ db = mongo_client['musix']
 user_collection = db['users']
 
 
-@Client.on_message(filters.text & filters.private)
+@Client.on_message(filters.text & filters.group)
 async def handle_private_messages(client, message):
     user_id = message.from_user.id
 
