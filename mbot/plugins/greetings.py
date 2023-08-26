@@ -27,6 +27,7 @@ from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
 from pyrogram.raw.functions import Ping
 from mbot import LOG_GROUP, OWNER_ID, SUDO_USERS, Mbot,AUTH_CHATS
 from os import execvp,sys
+from mbot.plugins.Saavn import user_collection
 
 @Mbot.on_message(filters.command("start") & filters.private)
 async def start(client, message):
