@@ -71,7 +71,7 @@ async def start(client, message):
     )
 
     user_id = message.from_user.id  # Using message to get the user's ID
-    await user_collection.insert_one({"user_id": user_id})
+    user_collection.insert_one({"user_id": user_id})
     data = await client.get_me()
     BOT_USERNAME = data.username
 
