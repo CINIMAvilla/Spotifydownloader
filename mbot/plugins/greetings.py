@@ -38,12 +38,13 @@ async def start(client, message):
     is_subscribed = user_collection.find_one({'user_id': user_id})
 
     if not is_subscribed:
-    await user_collection.insert_one({"user_id": user_id})
-        return
-    await client.send_message(
-        LOG_GROUP,
-        f"#NEWUSER: \n\nNew User [{message.from_user.first_name}](tg://user?id={user_id}) started @{BOT_USERNAME} from PM!"
-    )
+        await user_collection.insert_one({"user_id": user_id})
+        await client.send_message(
+            LOG_GROUP,
+            f"#NEWUSER: \n\nNew User [{message.from_user.first_name}](tg://user?id={user_id}) started @{BOT_USERNAME} from PM!"
+        )
+    else:
+        pass
 
 @Mbot.on_message(filters.command("restart") & filters.chat(OWNER_ID) & filters.private)
 async def restart(_,message):
