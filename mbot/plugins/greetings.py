@@ -38,12 +38,7 @@ async def start(client, message):
     is_subscribed = user_collection.find_one({'user_id': user_id})
 
     if not is_subscribed:
-        user_collection.insert_one({"user_id": user_id})
-        data = await client.get_me()
-        BOT_USERNAME = data.username
-        await message.reply(
-            f"Please start the bot in a private chat by messaging @{BOT_USERNAME} and try again."
-        )
+    await user_collection.insert_one({"user_id": user_id})
         return
     await client.send_message(
         LOG_GROUP,
