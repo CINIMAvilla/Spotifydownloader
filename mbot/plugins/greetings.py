@@ -32,7 +32,7 @@ from mbot.plugins.Saavn import user_collection
 @Mbot.on_message(filters.command("start") & filters.private)
 async def start(client, message):
     await message.reply_text(
-        f"Hello {message.from_user.first_name}, I'm a Simple Music Downloader Bot. I Currently Support Download from Youtube.",
+        f"🎶🎵 Welcome to Spotify Downloa 🎵🎶\n\nI can help you search 🔍,\n listen 🎧 and download 📱 songs easily using Spotify URLs and custom queries!\n You can directly send Spotify URLs of tracks, playlists , albums and artists to download them.",
     )
     user_id = message.from_user.id
     is_subscribed = user_collection.find_one({'user_id': user_id})
