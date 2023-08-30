@@ -560,15 +560,7 @@ async def spotify_dl(Mbot,message: Message):
             rmtree(randomdir)
         except:
             pass
-        try:
-            await message.reply_text(f"Done✅",   
-         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(text="Feedback", callback_data="feed")]]))
-            await message.reply_text(f"Check out @spotify_downloa (music)  @spotifynewss(News)")
-            await m.delete()
-        except:
-            pass 
-       # await message.reply_text(f"thumbnail and details is temp removed due to  there is  something going on telegram side:)")
-           
+
 @Mbot.on_callback_query(filters.regex(r"feed"))
 async def feedback(Mbot,query):
       try:
