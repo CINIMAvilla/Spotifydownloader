@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
+from mbot.plugins.user import db
 from datetime import datetime
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
@@ -29,22 +29,32 @@ from mbot import LOG_GROUP, OWNER_ID, SUDO_USERS, Mbot,AUTH_CHATS
 from os import execvp,sys
 from mbot.plugins.Saavn import user_collection
 
+
+LOG_TEXT_G = """#NewGroup
+Group = {}(<code>{}</code>)
+Total Members = <code>{}</code>
+Added By - {}
+"""
+
+LOG_TEXT_P = """#NewUser
+ID - <code>{}</code>
+Name - {}
+"""
+
 @Mbot.on_message(filters.command("start") & filters.private)
 async def start(client, message):
     await message.reply_text(
         f"🎶🎵 Welcome to Spotify Downloa 🎵🎶\n\nI can help you search 🔍,\n listen 🎧 and download 📱 songs easily using Spotify URLs and custom queries!\n You can directly send Spotify URLs of tracks, playlists , albums and artists to download them.",
     )
-    user_id = message.from_user.id
-    is_subscribed = user_collection.find_one({'user_id': user_id})
+    if not await db.get_chat(message.chat.id):
+            total=await client.get_chat_members_count(message.chat.id)
+            await client.send_message(LOG_GROUP, LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
+            await db.add_chat(message.chat.id, message.chat.title)
+        return 
+    if not await db.is_user_exist(message.from_user.id):
+        await db.add_user(message.from_user.id, message.from_user.first_name)
+        await client.send_message(LOG_GROUP, LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
 
-    if not is_subscribed:
-        await user_collection.insert_one({"user_id": user_id})
-        await client.send_message(
-            LOG_GROUP,
-            f"#NEWUSER: \n\nNew User [{message.from_user.first_name}](tg://user?id={user_id}) started @{BOT_USERNAME} from PM!"
-        )
-    else:
-        pass
 
 @Mbot.on_message(filters.command("restart") & filters.chat(OWNER_ID) & filters.private)
 async def restart(_,message):
