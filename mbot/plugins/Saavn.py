@@ -8,7 +8,7 @@ import pymongo
 import os
 # Your MongoDB connection URI
 MONGODB_URI = "mongodb+srv://Musix:abhijith@cluster0.zp443lr.mongodb.net/?retryWrites=true&w=majority"
-MONGODB_NAME = "Musix
+MONGODB_NAME = "Musix"
 
 # Initialize MongoDB client
 mongo_client = pymongo.MongoClient(MONGODB_URI)
