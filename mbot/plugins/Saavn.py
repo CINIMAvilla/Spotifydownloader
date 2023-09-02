@@ -7,6 +7,7 @@ from mbot import LOG_GROUP
 import pymongo
 import os
 from mbot.plugins.user import db
+from mbot.plugins.greetings import LOG_TEXT_G
 # Your MongoDB connection URI
 MONGODB_URI = "mongodb+srv://Musix:abhijith@cluster0.zp443lr.mongodb.net/?retryWrites=true&w=majority"
 MONGODB_NAME = "Musix"
