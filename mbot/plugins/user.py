@@ -1,5 +1,7 @@
 import motor.motor_asyncio
-from mbot.plugins.Saavn import MONGODB_URI, MONGODB_NAME
+
+MONGODB_URI = "mongodb+srv://Musix:abhijith@cluster0.zp443lr.mongodb.net/?retryWrites=true&w=majority"
+MONGODB_NAME = "Musix"
 
 class Database:
     
