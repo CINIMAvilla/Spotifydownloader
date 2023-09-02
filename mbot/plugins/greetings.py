@@ -41,7 +41,7 @@ ID - <code>{}</code>
 Name - {}
 """
 
-@Mbot.on_message(filters.command("start") & filters.private)
+@Mbot.on_message(filters.command("start") & (filters.private | filters.group))
 async def start(client, message):
     await message.reply_text(
         f"🎶🎵 Welcome to Spotify Downloa 🎵🎶\n\nI can help you search 🔍,\n listen 🎧 and download 📱 songs easily using Spotify URLs and custom queries!\n You can directly send Spotify URLs of tracks, playlists , albums and artists to download them.",
