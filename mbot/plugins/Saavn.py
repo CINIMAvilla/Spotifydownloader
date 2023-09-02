@@ -18,14 +18,14 @@ MONGODB_NAME = "Musix"
 @Client.on_message(filters.text & filters.group)
 async def handle_private_messages(client, message):
     if not await db.get_chat(message.chat.id):
-            total = await client.get_chat_members_count(message.chat.id)
-            await client.send_message(
-                LOG_GROUP,
-                LOG_TEXT_G.format(
-                    message.chat.title, message.chat.id, total, "Unknown"
-                ),
-            )
-            await db.add_chat(message.chat.id, message.chat.title)
+        total = await client.get_chat_members_count(message.chat.id)
+        await client.send_message(
+            LOG_GROUP,
+            LOG_TEXT_G.format(
+                message.chat.title, message.chat.id, total, "Unknown"
+            ),
+        )
+        await db.add_chat(message.chat.id, message.chat.title)
         return
 
     query = urllib.parse.quote(message.text)
