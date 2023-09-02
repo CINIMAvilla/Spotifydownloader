@@ -27,7 +27,6 @@ from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
 from pyrogram.raw.functions import Ping
 from mbot import LOG_GROUP, OWNER_ID, SUDO_USERS, Mbot,AUTH_CHATS
 from os import execvp,sys
-from mbot.plugins.Saavn import user_collection
 
 
 LOG_TEXT_G = """#NewGroup
