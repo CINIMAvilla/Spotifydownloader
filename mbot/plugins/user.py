@@ -1,7 +1,7 @@
 import motor.motor_asyncio
 
 MONGODB_URI = "mongodb+srv://Musix:abhijith@cluster0.zp443lr.mongodb.net/?retryWrites=true&w=majority"
-MONGODB_NAME = "Musix"
+MONGODB_NAME = "Musixz"
 
 class Database:
     
