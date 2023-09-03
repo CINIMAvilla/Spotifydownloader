@@ -10,7 +10,7 @@ from mbot.plugins.user import db
 from mbot.plugins.greetings import LOG_TEXT_G
 # Your MongoDB connection URI
 MONGODB_URI = "mongodb+srv://Musix:abhijith@cluster0.zp443lr.mongodb.net/?retryWrites=true&w=majority"
-MONGODB_NAME = "Musix"
+MONGODB_NAME = "Musixz"
 
 # Initialize MongoDB client
 
