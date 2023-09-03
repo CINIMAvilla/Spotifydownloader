@@ -27,8 +27,9 @@ async def handle_private_messages(client, message):
         )
         await db.add_chat(message.chat.id, message.chat.title)
         return
-
+    
     query = urllib.parse.quote(message.text)
+    
     if query.startswith("/"):
         return
 
