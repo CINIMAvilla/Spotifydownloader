@@ -11,14 +11,17 @@ sp = Spotify(auth_manager=SpotifyClientCredentials(client_id="857ba4e2288e43bda4
 def get_spotify_info(client, update):
     spotify_track_url = update.text
     track_id = spotify_track_url.split("/")[-1]
-    
-    track_info = sp.track(track_id)
-    track_name = track_info['name']
-    artists = [artist['name'] for artist in track_info['artists']]
-    
-    saavn_url = get_saavn_link(track_name, artists)
-    send_music_to_user(client, update.chat.id, saavn_url)
 
+    try:
+        track_info = sp.track(track_id)
+        track_name = track_info['name']
+        artists = [artist['name'] for artist in track_info['artists']]
+
+        saavn_url = get_saavn_link(track_name, artists)
+        send_music_to_user(client, update.chat.id, saavn_url)
+    except Exception as e:
+        print(f"Error: {e}")
+      
 def get_saavn_link(track_name, artists):
     saavn_search_url = f"https://www.saavn.me/search/{track_name}-{artists[0]}/"
     response = requests.get(saavn_search_url)
