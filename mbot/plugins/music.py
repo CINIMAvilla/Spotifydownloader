@@ -43,8 +43,8 @@ async def song(_, message):
         k = await message.reply("⌛")
         print ('⌛')
         try:
-            randomdir = f"/tmp/{str(randint(1,100000000))}"
-            os.mkdir(randomdir)
+            crazy = f"/tmp/{str(randint(1,100000000))}"
+            os.mkdir(crazy)
         except Exception as e:
             await message.reply_text(f"Failed to send song, retry after some time 😥 Reason: {e}")
             return await k.delete()
@@ -53,7 +53,7 @@ async def song(_, message):
         await k.edit("Downloading")
         print('Downloading')
         await message.reply_chat_action(enums.ChatAction.RECORD_AUDIO)
-        path = await download_songs(query, randomdir)
+        path = await download_songs(query, crazy)
         await message.reply_chat_action(enums.ChatAction.UPLOAD_AUDIO)
         await k.edit('Uploading')
         await message.reply_audio(path)
@@ -65,7 +65,7 @@ async def song(_, message):
         await message.reply_text(f"Failed to send song 😥 Reason: {e}")
     finally:
         try:
-            shutil.rmtree(randomdir)
+            shutil.rmtree(crazy)
             await message.reply_text(f"Check out @c_i_n_i_m_a_v_i_l_l_a (movie group) @TOM_Auto_filter_bot (movie bot)")
             return await k.delete()
         except:
