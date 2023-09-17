@@ -68,14 +68,13 @@ def song(client, message):
         rep = f"""
 **❖ ᴛɪᴛʟᴇ ›› [{title}]({link})**
 **❖ ᴅᴜʀᴀᴛɪᴏɴ ›› {duration}**
-**❖ ᴘᴏᴡᴇʀᴅ ʙʏ ›› [Me](https://t.me/musicdownloadeer_bot)**
 **❖ ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ ›› {rpk}**
 """
         secmul, dur, dur_arr = 1, 0, duration.split(':')
         for i in range(len(dur_arr)-1, -1, -1):
             dur += (int(dur_arr[i]) * secmul)
             secmul *= 60
-        message.reply_audio(audio_file, caption=rep, parse_mode='md',quote=False, title=title, duration=dur, performer=performer, thumb=thumb_name)
+        message.reply_audio(audio_file, caption=rep, parse_mode=enums.ParseMode.MARKDOWN, quote=False, title=title, duration=dur, performer=performer, thumb=thumb_name)
         m.delete()
     except Exception as e:
         m.edit("**🚫 ᴇʀʀᴏʀ 🚫**")
@@ -152,8 +151,9 @@ async def vsong(client, message: Message):
         file_name=str(ytdl_data["title"]),
         thumb=sedlyf,
         caption=capy,
-        supports_streaming=True,        
-        reply_to_message_id=message.message_id 
+        supports_streaming=True,
+        parse_mode=enums.ParseMode.MARKDOWN, 
+        reply_to_message_id=message.id
     )
     await pablo.delete()
     for files in (sedlyf, file_stark):
