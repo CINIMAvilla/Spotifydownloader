@@ -2,6 +2,8 @@ from yt_dlp import YoutubeDL
 import os
 from pyrogram import filters, enums, Client as Mbot
 import shutil
+from random import randit
+
 
 async def download_songs(query, download_directory='.'):
     query = f"{query} Lyrics".replace(":", "").replace("\"", "")
