@@ -2,7 +2,7 @@ from yt_dlp import YoutubeDL
 import os
 from pyrogram import filters, enums, Client as Mbot
 import shutil
-from random import randit
+from random import randint
 
 
 async def download_songs(query, download_directory='.'):
