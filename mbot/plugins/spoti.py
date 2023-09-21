@@ -12,13 +12,14 @@ sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=YOUR_CLIENT
 async def send_track(client, chat_id, track_info):
     track_name = track_info['name']
     artists = ', '.join(artist['name'] for artist in track_info['artists'])
-    audio_url = track_info['preview_url']
+    track_id = track_info['id']
+    audio_url = sp.track(track_id)['external_urls']['spotify']
     caption = f"🎵 Track: {track_name} by {artists}"
     await client.send_audio(chat_id=chat_id, audio=audio_url, caption=caption)
 
 async def send_playlist_tracks(client, chat_id, playlist_tracks):
     for track_info in playlist_tracks:
-        await send_track(chat_id, track_info['track'])
+        await send_track(client, chat_id, track_info['track'])
 
 @Client.on_message(filters.regex(r'https?://open\.spotify\.com/(track|playlist)/[a-zA-Z0-9]+'))
 async def handle_spotify_link(client, message):
